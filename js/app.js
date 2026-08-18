@@ -5,6 +5,7 @@
   "use strict";
 
   const CHAVE = "molbox.estado.v1";
+  const CHAVE_ONBOARDING = "molbox.onboarding.v1";
 
   const estado = {
     formula: "NaOH",
@@ -78,7 +79,7 @@
   /* ---------------- navegação ---------------- */
 
   const TITULOS = {
-    "tela-mol": "O que é o mol",
+    "tela-mol": "Mol: A Chave",
     "tela-massa": "Massa molar",
     "tela-ponte": "Ponte do mol",
     "tela-balancear": "Balancear",
@@ -147,21 +148,36 @@
     const alvo = $("#painel-mol");
     alvo.innerHTML = "";
 
-    /* --- abertura --- */
+    /* --- abertura: a chave --- */
     const capa = criar("div", { className: "cartao capa-mol" });
     capa.innerHTML =
-      `<h1 style="margin:0 0 var(--mb-e3)">O mol</h1>` +
-      `<p class="lede-mol">Você não consegue contar átomos. Ninguém consegue.</p>` +
-      `<p>Um copo de água tem mais moléculas do que existem estrelas em todo o universo observável. ` +
-      `Elas são pequenas demais para ver, numerosas demais para contar e leves demais para pesar uma a uma.</p>` +
-      `<p>E ainda assim, todo dia, alguém precisa saber <em>quantas</em>. Porque é o número de partículas que decide ` +
-      `se a reação acontece, quanto de produto sai e qual dose faz efeito.</p>` +
-      `<p class="fecho-mol">O mol é a solução desse problema. E a solução é mais simples do que parece: ` +
-      `é um pacote.</p>`;
+      `<h1 style="margin:0 0 var(--mb-e3)">Mol: A Chave 🔑</h1>` +
+      `<p class="lede-mol">Pegue aqui <strong>A Chave</strong> 🔑 para destravar sua vida profissional com a Química.</p>` +
+      `<p>Sem o mol você não controla reação, dose, rendimento nem laudo. ` +
+      `Com o mol, a Tabela Periódica vira instrumento de bancada e a balança passa a “contar” partículas.</p>` +
+      `<p>Você não consegue contar átomos. Ninguém consegue. ` +
+      `Eles são pequenos demais, numerosos demais e leves demais. ` +
+      `Ainda assim, todo dia alguém precisa saber <em>quantas</em> — porque o número de partículas decide se a reação acontece, quanto de produto sai e qual dose faz efeito.</p>` +
+      `<p class="fecho-mol">O mol resolve isso. E a solução é mais simples do que parece: <strong>é um pacote</strong> — como a dúzia.</p>`;
     alvo.appendChild(capa);
 
-    /* --- 1. pacotes --- */
-    const s1 = secao(alvo, "Você já usa pacotes a vida inteira", "PRIMEIRA IDEIA");
+    /* --- 1. o que isso destrava (impacto profissional primeiro) --- */
+    const s6 = secao(alvo, "O que essa chave destrava", "POR QUE IMPORTA");
+    s6.appendChild(criar("p", {
+      textContent: "Entender o mol não é só passar de ano. É a ferramenta que abre praticamente tudo que se faz com química na vida profissional.",
+    }));
+    const lista = criar("div", { className: "aplicacoes" });
+    for (const a of APLICACOES) {
+      const item = criar("div", { className: "aplicacao" });
+      item.innerHTML =
+        `<p class="area"><span class="emoji-area" aria-hidden="true">${a.emoji || ""}</span> ${a.area}</p>` +
+        `<p>${a.texto}</p>`;
+      lista.appendChild(item);
+    }
+    s6.appendChild(lista);
+
+    /* --- 2. pacotes --- */
+    const s1 = secao(alvo, "Você já usa pacotes a vida inteira", "A IDEIA CENTRAL");
     s1.appendChild(criar("p", {
       textContent: "Ninguém pede quinhentas folhas de papel na papelaria: pede uma resma. Ninguém compra doze ovos: compra uma dúzia. Sempre que uma coisa é numerosa demais para contar uma a uma, a gente inventa um pacote e passa a contar pacotes.",
     }));
@@ -193,7 +209,7 @@
     }));
 
     /* --- 2. tamanho do pacote --- */
-    const s2 = secao(alvo, "Quão grande é esse pacote", "SEGUNDA IDEIA");
+    const s2 = secao(alvo, "Quão grande é esse pacote", "PARA SENTIR O TAMANHO");
     s2.appendChild(criar("p", {
       innerHTML: `Um mol são <strong>602 214 076 000 000 000 000 000</strong> unidades. Ler esse número em voz alta não ajuda em nada — ` +
         `ninguém tem intuição para vinte e três zeros. Então escolha um objeto do dia a dia e veja o que acontece quando você junta um mol dele.`,
@@ -219,7 +235,7 @@
     s2.appendChild(quadro);
 
     /* --- 3. o contraste --- */
-    const s3 = secao(alvo, "Agora o golpe", "TERCEIRA IDEIA");
+    const s3 = secao(alvo, "Agora o golpe", "O CONTRASTE");
     const contraste = contrasteDaAgua(analisar("H2O").massaMolar);
     s3.appendChild(criar("p", {
       innerHTML: `Você viu que um mol de <strong>gotas</strong> de água encheria ${contraste.gotas.texto} de todos os oceanos do planeta.`,
@@ -245,7 +261,7 @@
     }));
 
     /* --- 4. por que este número --- */
-    const s4 = secao(alvo, "Por que 6,02×10²³ e não um número redondo", "QUARTA IDEIA");
+    const s4 = secao(alvo, "Por que 6,02×10²³ e não um número redondo", "PARA QUEM QUER IR MAIS FUNDO");
     s4.appendChild(criar("p", {
       textContent: "Aqui está a parte genial, e é a que quase ninguém conta. O tamanho do pacote não foi escolhido para ser bonito. Foi escolhido para que um número que você lê na tabela periódica sirva para duas coisas ao mesmo tempo.",
     }));
@@ -284,7 +300,7 @@
     }));
 
     /* --- 5. as reações --- */
-    const s5 = secao(alvo, "Por que isso decide se a reação dá certo", "QUINTA IDEIA");
+    const s5 = secao(alvo, "Por que isso decide se a reação dá certo", "NA BANCADA");
     s5.appendChild(criar("p", {
       textContent: "As substâncias não reagem em gramas. Elas reagem em partículas, e em proporções de números inteiros: duas moléculas de hidrogênio para cada molécula de oxigênio, nunca uma vírgula sete.",
     }));
@@ -317,22 +333,7 @@
       `allowfullscreen loading="lazy"></iframe>`;
     sVideo.appendChild(videoWrap);
 
-    /* --- 7. profissão --- */
-    const s6 = secao(alvo, "O que isso destrava", "POR FIM");
-    s6.appendChild(criar("p", {
-      textContent: "Entender o mol não é só passar de ano. É a chave que abre praticamente tudo que se faz com química na vida profissional.",
-    }));
-    const lista = criar("div", { className: "aplicacoes" });
-    for (const a of APLICACOES) {
-      const item = criar("div", { className: "aplicacao" });
-      item.innerHTML =
-        `<p class="area"><span class="emoji-area" aria-hidden="true">${a.emoji || ""}</span> ${a.area}</p>` +
-        `<p>${a.texto}</p>`;
-      lista.appendChild(item);
-    }
-    s6.appendChild(lista);
-
-    /* --- 8. Degrau 0 — teste rápido --- */
+    /* --- Degrau 0 — teste rápido --- */
     const s0 = secao(alvo, "Degrau 0 — teste rápido", "TREINO INICIAL");
     s0.appendChild(criar("p", {
       textContent: "Perguntas bem simples sobre o que você acabou de ver. O objetivo é só confirmar que a ideia do pacote ficou clara.",
@@ -2496,25 +2497,104 @@
       if (ev.key === "Escape" && estreita()) fecharMenu();
     });
 
-    // quem chega pela primeira vez começa pela explicação do mol; quem já
-    // usou volta para onde parou
-    mostrarTela(estado.telaAtual);
-
     const destino = {
       "#mol": "tela-mol",
       "#massa-molar": "tela-massa", "#converter": "tela-ponte",
       "#balancear": "tela-balancear", "#estequiometria": "tela-esteq",
       "#treino": "tela-treino", "#progresso": "tela-progresso", "#tabela": "tela-tabela",
     }[location.hash];
-    if (destino) mostrarTela(destino);
 
-    // no celular a gaveta começa aberta, para deixar claro que a navegação
-    // está ali — mesma escolha do sistema da Reviva
-    if (estreita()) abrirMenu();
+    const primeiraVez = !jaViuOnboarding();
+
+    if (primeiraVez) {
+      // primeira visita: sempre começa na tela do mol e mostra o tour
+      estado.telaAtual = "tela-mol";
+      mostrarTela("tela-mol");
+      // no celular não abre o menu automaticamente — o overlay explica a navegação
+      setTimeout(mostrarOnboarding, 350);
+    } else {
+      // quem já usou volta para onde parou
+      mostrarTela(estado.telaAtual);
+      if (destino) mostrarTela(destino);
+      // no celular a gaveta começa aberta, para deixar claro que a navegação está ali
+      if (estreita()) abrirMenu();
+    }
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
     }
+  }
+
+  /* ---------------- onboarding do primeiro acesso ---------------- */
+
+  function jaViuOnboarding() {
+    try {
+      return localStorage.getItem(CHAVE_ONBOARDING) === "1";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function marcarOnboardingVisto() {
+    try {
+      localStorage.setItem(CHAVE_ONBOARDING, "1");
+    } catch (e) { /* modo privativo */ }
+  }
+
+  function mostrarOnboarding() {
+    if (document.getElementById("onboarding")) return;
+
+    const overlay = criar("div", { id: "onboarding", className: "onboarding", role: "dialog",
+      "aria-modal": "true", "aria-labelledby": "onboarding-titulo" });
+
+    const painel = criar("div", { className: "onboarding-painel" });
+
+    painel.innerHTML =
+      `<p class="onboarding-badge">Bem-vindo ao MOLBOX</p>` +
+      `<h2 id="onboarding-titulo">Do átomo ao mol, do mol à bancada</h2>` +
+      `<ol class="onboarding-passos">` +
+      `<li><strong>Comece pela chave.</strong> A tela “Mol: A Chave” mostra por que o mol destrava o trabalho do químico — e usa a analogia da dúzia para fazer o número de Avogadro caber na cabeça.</li>` +
+      `<li><strong>Faça o Degrau 0.</strong> No final dessa mesma tela há um teste rápido com perguntas bem simples. Serve só para confirmar que a ideia do pacote ficou clara.</li>` +
+      `<li><strong>Depois explore.</strong> Use o menu (ícone ☰ no canto) para abrir massa molar, balanceamento, soluções, titulação e o treino com diagnóstico de erro.</li>` +
+      `</ol>` +
+      `<p class="onboarding-dica">Tudo funciona sem internet. Seu progresso fica só neste aparelho.</p>`;
+
+    const acoes = criar("div", { className: "onboarding-acoes" });
+    const btn = criar("button", {
+      type: "button",
+      className: "botao",
+      textContent: "Pegar a chave →"
+    });
+    btn.addEventListener("click", fecharOnboarding);
+    acoes.appendChild(btn);
+    painel.appendChild(acoes);
+
+    overlay.appendChild(painel);
+    document.body.appendChild(overlay);
+
+    // foco no botão para acessibilidade
+    setTimeout(() => btn.focus(), 50);
+
+    // fechar com Escape
+    const onKey = (ev) => {
+      if (ev.key === "Escape") {
+        fecharOnboarding();
+        document.removeEventListener("keydown", onKey);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+  }
+
+  function fecharOnboarding() {
+    const el = document.getElementById("onboarding");
+    if (!el) return;
+    el.classList.add("saindo");
+    marcarOnboardingVisto();
+    setTimeout(() => {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      // no celular, agora sim abre o menu para o aluno ver a navegação
+      if (estreita()) abrirMenu();
+    }, 220);
   }
 
   document.addEventListener("DOMContentLoaded", iniciar);
