@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MOLBOX — química de bolso</title>
+<meta name="description" content="Do átomo ao mol, do mol à bancada. Massa molar, conversões, treino com diagnóstico de erro e tabela periódica, funcionando sem internet.">
+<meta name="theme-color" content="#164194">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.svg">
+<link rel="apple-touch-icon" href="icones/icone-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MOLBOX">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="fontes.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<a class="pular" href="#conteudo">Ir para o conteúdo</a>
+
+<aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+  <div class="sidebar-topo">
+    <img src="marca/molbox-negativo.svg" alt="MOLBOX">
+    <button type="button" class="fechar" id="fecharMenu" aria-label="Fechar menu">&#10005;</button>
+  </div>
+  <p class="sidebar-lema">Do átomo ao mol,<br>do mol à bancada</p>
+  <nav class="menu" id="menu">
+    <p class="grupo">Comece por aqui</p>
+    <button type="button" class="item" data-tela="tela-mol" aria-current="page"><span class="glifo" aria-hidden="true">🔑</span><span class="rotulo">Mol: A Chave</span></button>
+    <p class="grupo">Fundamentos</p>
+    <button type="button" class="item" data-tela="tela-massa"><span class="glifo" aria-hidden="true">M</span><span class="rotulo">Massa molar</span></button>
+    <button type="button" class="item" data-tela="tela-ponte"><span class="glifo" aria-hidden="true">&#8596;</span><span class="rotulo">Ponte do mol</span></button>
+    <button type="button" class="item" data-tela="tela-tabela"><span class="glifo" aria-hidden="true">&#8862;</span><span class="rotulo">Tabela periódica</span></button>
+    <p class="grupo">Reações</p>
+    <button type="button" class="item" data-tela="tela-balancear"><span class="glifo" aria-hidden="true">&#8646;</span><span class="rotulo">Balancear</span></button>
+    <button type="button" class="item" data-tela="tela-esteq"><span class="glifo" aria-hidden="true">&#8721;</span><span class="rotulo">Estequiometria</span></button>
+    <p class="grupo">Soluções</p>
+    <button type="button" class="item" data-tela="tela-solucoes"><span class="glifo" aria-hidden="true">&#8776;</span><span class="rotulo">Concentração</span></button>
+    <button type="button" class="item" data-tela="tela-preparo"><span class="glifo" aria-hidden="true">&#9707;</span><span class="rotulo">Preparo</span></button>
+    <button type="button" class="item" data-tela="tela-ph"><span class="glifo" aria-hidden="true">pH</span><span class="rotulo">Ácidos e bases</span></button>
+    <button type="button" class="item" data-tela="tela-titulacao"><span class="glifo" aria-hidden="true">&#8735;</span><span class="rotulo">Titulação</span></button>
+    <p class="grupo">Prática</p>
+    <button type="button" class="item" data-tela="tela-treino"><span class="glifo" aria-hidden="true">&#9998;</span><span class="rotulo">Treino</span></button>
+    <button type="button" class="item" data-tela="tela-progresso"><span class="glifo" aria-hidden="true">&#9650;</span><span class="rotulo">Progresso</span></button>
+  </nav>
+  <div class="sidebar-rodape">
+    <p id="resumo-lateral">&#8212;</p>
+    <p class="versao">MOLBOX v0.6.1 &middot; funciona sem internet</p>
+  </div>
+</aside>
+
+<div class="cortina" id="cortina" hidden></div>
+
+<header class="barra">
+  <button type="button" class="menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar"><span></span></button>
+  <span class="titulo-pagina" id="tituloPagina">Massa molar</span>
+</header>
+
+<main id="conteudo">
+
+  <section id="tela-mol" hidden>
+    <div id="painel-mol"></div>
+  </section>
+
+  <section id="tela-massa" hidden>
+    <h1>Massa molar</h1>
+    <p class="intro">Escreva uma fórmula. O aplicativo mostra quanto pesa um mol dela e de onde vem cada grama dessa massa.</p>
+
+    <div class="cartao">
+      <label for="formula">Fórmula da substância</label>
+      <input type="text" id="formula" class="formula" value="NaOH"
+             autocomplete="off" autocapitalize="off" spellcheck="false"
+             placeholder="Ca(OH)2" aria-describedby="ajuda-formula">
+      <p class="ajuda" id="ajuda-formula">Entende parênteses e colchetes aninhados, hidratos com ponto (CuSO4&middot;5H2O), índices em subscrito e cargas de íons (SO4^2-).</p>
+      <div class="chips" id="exemplos"></div>
+      <div id="erro-formula" role="alert"></div>
+    </div>
+
+    <div id="resultado-massa" aria-live="polite"></div>
+  </section>
+
+  <section id="tela-ponte" hidden>
+    <h1>A ponte do mol</h1>
+    <p class="intro">Digite um valor em qualquer campo. Os outros três aparecem, e o caminho da conta fica visível embaixo &#8212; com as unidades se cancelando.</p>
+
+    <div class="cartao">
+      <div class="substancia">
+        <span class="nome" id="ponte-formula">NaOH</span>
+        <span class="massa" id="ponte-massa"></span>
+      </div>
+      <div class="grelha" id="campos-ponte"></div>
+      <div style="margin-top:var(--mb-e4)">
+        <label for="volume-molar">Condição do gás</label>
+        <select id="volume-molar"></select>
+        <p class="ajuda" id="ajuda-volume"></p>
+      </div>
+    </div>
+
+    <div class="cartao caminho" id="caminho" aria-live="polite"></div>
+  </section>
+
+  <section id="tela-balancear" hidden>
+    <h1>Balancear</h1>
+    <p class="intro">Escreva a equação e o aplicativo resolve o sistema de equações que ela esconde. A tabela de conferência mostra a prova: os átomos de cada elemento contados antes e depois.</p>
+
+    <div class="cartao">
+      <label for="equacao">Equação da reação</label>
+      <input type="text" id="equacao" class="formula" value="CH4 + O2 -> CO2 + H2O"
+             autocomplete="off" autocapitalize="off" spellcheck="false"
+             placeholder="H2 + O2 -> H2O" aria-describedby="ajuda-equacao">
+      <p class="ajuda" id="ajuda-equacao">Separe os lados com -&gt; ou =. Coeficientes que você escrever são ignorados. Íons são aceitos: Fe2+, SO42-, MnO4-.</p>
+      <div class="chips" id="exemplos-eq"></div>
+      <div id="erro-equacao" role="alert"></div>
+    </div>
+
+    <div id="resultado-equacao" aria-live="polite"></div>
+  </section>
+
+  <section id="tela-esteq" hidden>
+    <h1>Estequiometria</h1>
+    <p class="intro">A partir da equação balanceada, informe o que você tem de cada reagente. O aplicativo descobre qual acaba primeiro e calcula o resto.</p>
+    <div id="painel-esteq"></div>
+  </section>
+
+  <section id="tela-solucoes" hidden>
+    <h1>Concentração</h1>
+    <p class="intro">Escreva o soluto, informe uma concentração em qualquer unidade e veja todas as outras. Abaixo, diluição e mistura.</p>
+    <div id="painel-solucoes"></div>
+  </section>
+
+  <section id="tela-preparo" hidden>
+    <h1>Preparo</h1>
+    <p class="intro">O que a conta manda pesar e o que a bancada exige de verdade: pureza do rótulo, vidraria compatível e a ordem das operações.</p>
+    <div id="painel-preparo"></div>
+  </section>
+
+  <section id="tela-ph" hidden>
+    <h1>Ácidos e bases</h1>
+    <p class="intro">pH calculado pelo balanço de cargas, sem atalho. Vale para ácido forte, fraco, poliprótico e para tampão — inclusive nas faixas onde as fórmulas de bolso erram.</p>
+    <div id="painel-ph"></div>
+  </section>
+
+  <section id="tela-titulacao" hidden>
+    <h1>Titulação</h1>
+    <p class="intro">A curva inteira ponto a ponto, o salto no ponto de equivalência, e qual indicador serve — com o erro que cada um introduz.</p>
+    <div id="painel-titulacao"></div>
+  </section>
+
+  <section id="tela-treino" hidden>
+    <h1>Treino</h1>
+    <p class="intro">Os exercícios são sorteados na hora, nunca repetem iguais. Quando você erra, o aplicativo tenta dizer <em>qual</em> passo saiu do trilho &#8212; não só que o número está errado.</p>
+
+    <div class="degraus" id="degraus" role="group" aria-label="Escolha do degrau"></div>
+    <div class="placar" id="placar"></div>
+    <div class="cartao" id="exercicio" aria-live="polite"></div>
+  </section>
+
+  <section id="tela-progresso" hidden>
+    <h1>Progresso</h1>
+    <p class="intro">Tudo que está aqui fica guardado só neste aparelho. Não há cadastro, não há servidor, nada é enviado para lugar nenhum.</p>
+    <div id="painel-progresso"></div>
+  </section>
+
+  <section id="tela-tabela" hidden>
+    <h1>Tabela periódica</h1>
+    <p class="intro">Toque num elemento para ver a ficha e somá-lo à fórmula que você está montando.</p>
+
+    <div class="cartao">
+      <label for="busca">Buscar elemento</label>
+      <input type="search" id="busca" placeholder="oxigênio, Fe, 26" autocomplete="off">
+      <div class="rolagem" style="margin-top:var(--mb-e4)">
+        <div class="periodica" id="periodica" role="grid" aria-label="Tabela periódica dos elementos"></div>
+      </div>
+      <div class="legenda-familias" id="legenda"></div>
+    </div>
+
+    <div id="ficha-elemento"></div>
+  </section>
+
+  <div class="rodape">
+    <p>Massas atômicas padrão IUPAC 2021. Constante de Avogadro 6,02214076&times;10&#178;&#179; mol&#8315;&#185;, valor exato desde a redefinição do SI em 2019.</p>
+    <p>MOLBOX v0.6.1 &#8212; funciona sem internet depois da primeira visita.</p>
+  </div>
+</main>
+
+<script src="js/elementos.js"></script>
+<script src="js/parser.js"></script>
+<script src="js/converter.js"></script>
+<script src="js/balanceador.js"></script>
+<script src="js/estequiometria.js"></script>
+<script src="js/moleculas.js"></script>
+<script src="js/calculadora.js"></script>
+<script src="js/solucoes.js"></script>
+<script src="js/preparo.js"></script>
+<script src="js/acidobase.js"></script>
+<script src="js/mol.js"></script>
+<script src="js/exercicios.js"></script>
+<script src="js/progresso.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
